@@ -44,3 +44,4 @@ async def create_book(book=Body()):
     Add new book
     """
     BOOKS.append(book)
+    # TODO: Add validation
