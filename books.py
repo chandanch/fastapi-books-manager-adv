@@ -1,6 +1,7 @@
 """
 Books API
 """
+from typing import Optional
 from fastapi import FastAPI
 from pydantic import BaseModel, Field
 
@@ -12,7 +13,7 @@ class Book:
     Book class
     """
 
-    book_id: int
+    book_id: Optional[int] = None
     title: str
     author: str
     category: str
@@ -42,7 +43,7 @@ BOOKS = [
     Book(1, "Programming with Py", "chandanch", "computers", 4),
     Book(2, "Programming with TS", "fameer", "computers", 3),
     Book(3, "Divine", "chandanch", "spiritual", 4),
-    Book(1, "Programming with R", "chandanch", "computers", 5),
+    Book(4, "Programming with R", "chandanch", "computers", 5),
 ]
 
 
@@ -60,4 +61,12 @@ async def create_book(book: BookRequest):
     Add new book
     """
     new_book = Book(**book.model_dump())
-    BOOKS.append(new_book)
+    BOOKS.append(generate_id(new_book))
+
+
+def generate_id(book):
+    """
+    increment ID
+    """
+    book.book_id = 1 if len(BOOKS) == 0 else BOOKS[-1].book_id + 1
+    return book
