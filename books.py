@@ -2,7 +2,7 @@
 Books API
 """
 from typing import Optional
-from fastapi import FastAPI
+from fastapi import FastAPI, Path, Query
 from pydantic import BaseModel, Field
 
 app = FastAPI()
@@ -71,6 +71,20 @@ async def get_books():
     return BOOKS
 
 
+@app.get("/books/search")
+# use Query() to validate query params
+async def search_books(rating: int = Query(gt=0, lt=6)):
+    """
+    Search all books
+    """
+    books_results = []
+    for book in BOOKS:
+        if book.rating == rating:
+            books_results.append(book)
+
+    return books_results
+
+
 @app.post("/books")
 async def create_book(book: BookRequest):
     """
@@ -90,7 +104,9 @@ def generate_id(book):
 
 
 @app.get("/books/{book_id}")
-async def get_book_by_id(book_id: int):
+# Path() is used to validate a specific path parameter
+# here we are enforcing that book_id must be > 0
+async def get_book_by_id(book_id: int = Path(gt=0)):
     """
     Get Book by ID
     """
@@ -100,7 +116,7 @@ async def get_book_by_id(book_id: int):
 
 
 @app.put("/books/{book_id}")
-async def update_book(book_id: int, book: BookRequest):
+async def update_book(book: BookRequest, book_id: int = Path(gt=0)):
     """
     update book
     """
