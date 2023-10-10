@@ -97,3 +97,15 @@ async def get_book_by_id(book_id: int):
     for book in BOOKS:
         if book.book_id == book_id:
             return book
+
+
+@app.put("/books/{book_id}")
+async def update_book(book_id: int, book: BookRequest):
+    """
+    update book
+    """
+    for i, book in enumerate(BOOKS):
+        if BOOKS[i].book_id == book_id:
+            BOOKS[i] = book
+            return {"status": "success"}
+    return {"stauts": "Not found"}
