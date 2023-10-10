@@ -87,3 +87,13 @@ def generate_id(book):
     """
     book.book_id = 1 if len(BOOKS) == 0 else BOOKS[-1].book_id + 1
     return book
+
+
+@app.get("/books/{book_id}")
+async def get_book_by_id(book_id: int):
+    """
+    Get Book by ID
+    """
+    for book in BOOKS:
+        if book.book_id == book_id:
+            return book
