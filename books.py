@@ -13,7 +13,7 @@ class Book:
     Book class
     """
 
-    book_id: Optional[int] = None
+    book_id: int
     title: str
     author: str
     category: str
@@ -32,11 +32,27 @@ class BookRequest(BaseModel):
     BookRequest model
     """
 
-    book_id: int
+    book_id: Optional[int] = Field(
+        default=None, title="book_id is optional and will be ignored"
+    )
     title: str = Field(min_length=4, max_length=100)
     author: str = Field(min_length=2, max_length=10)
     category: str = Field(min_length=3)
     rating: int = Field(gt=0, lt=6)
+
+    class Config:
+        """
+        schema config
+        """
+
+        json_schema_extra = {
+            "example": {
+                "title": "My new Birnds",
+                "author": "chandanch",
+                "category": "lean",
+                "rating": 4,
+            }
+        }
 
 
 BOOKS = [
@@ -62,6 +78,7 @@ async def create_book(book: BookRequest):
     """
     new_book = Book(**book.model_dump())
     BOOKS.append(generate_id(new_book))
+    return new_book
 
 
 def generate_id(book):
