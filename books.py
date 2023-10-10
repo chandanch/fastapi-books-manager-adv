@@ -1,5 +1,8 @@
-from fastapi import Body, FastAPI
-from pydantic import BaseModel
+"""
+Books API
+"""
+from fastapi import FastAPI
+from pydantic import BaseModel, Field
 
 app = FastAPI()
 
@@ -23,6 +26,18 @@ class Book:
         self.rating = rating
 
 
+class BookRequest(BaseModel):
+    """
+    BookRequest model
+    """
+
+    book_id: int
+    title: str = Field(min_length=4, max_length=100)
+    author: str = Field(min_length=2, max_length=10)
+    category: str = Field(min_length=3)
+    rating: int = Field(gt=0, lt=6)
+
+
 BOOKS = [
     Book(1, "Programming with Py", "chandanch", "computers", 4),
     Book(2, "Programming with TS", "fameer", "computers", 3),
@@ -40,9 +55,9 @@ async def get_books():
 
 
 @app.post("/books")
-async def create_book(book=Body()):
+async def create_book(book: BookRequest):
     """
     Add new book
     """
-    BOOKS.append(book)
-    # TODO: Add validation
+    new_book = Book(**book.model_dump())
+    BOOKS.append(new_book)
