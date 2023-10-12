@@ -2,7 +2,7 @@
 Books API
 """
 from typing import Optional
-from fastapi import FastAPI, Path, Query
+from fastapi import FastAPI, Path, Query, HTTPException
 from pydantic import BaseModel, Field
 
 app = FastAPI()
@@ -113,6 +113,13 @@ async def get_book_by_id(book_id: int = Path(gt=0)):
     for book in BOOKS:
         if book.book_id == book_id:
             return book
+    raise HTTPException(
+        status_code=404,
+        detail={
+            "error": "Book not found",
+            "msg": f"Book with ID: {book_id} not found",
+        },
+    )
 
 
 @app.put("/books/{book_id}")
