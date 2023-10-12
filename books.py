@@ -4,6 +4,7 @@ Books API
 from typing import Optional
 from fastapi import FastAPI, Path, Query, HTTPException
 from pydantic import BaseModel, Field
+from starlette import status
 
 app = FastAPI()
 
@@ -63,7 +64,7 @@ BOOKS = [
 ]
 
 
-@app.get("/books")
+@app.get("/books", status_code=status.HTTP_200_OK)
 async def get_books():
     """
     Returns all books
@@ -85,7 +86,7 @@ async def search_books(rating: int = Query(gt=0, lt=6)):
     return books_results
 
 
-@app.post("/books")
+@app.post("/books", status_code=status.HTTP_201_CREATED)
 async def create_book(book: BookRequest):
     """
     Add new book
@@ -103,7 +104,7 @@ def generate_id(book):
     return book
 
 
-@app.get("/books/{book_id}")
+@app.get("/books/{book_id}", status_code=status.HTTP_200_OK)
 # Path() is used to validate a specific path parameter
 # here we are enforcing that book_id must be > 0
 async def get_book_by_id(book_id: int = Path(gt=0)):
