@@ -4,6 +4,7 @@ Books API
 from typing import Optional
 from fastapi import FastAPI, Path, Query, HTTPException
 from pydantic import BaseModel, Field
+from starlette.responses import JSONResponse
 from starlette import status
 
 app = FastAPI()
@@ -131,5 +132,7 @@ async def update_book(book: BookRequest, book_id: int = Path(gt=0)):
     for i, book in enumerate(BOOKS):
         if BOOKS[i].book_id == book_id:
             BOOKS[i] = book
-            return {"status": "success"}
+            return JSONResponse(
+                content={"status": "success"}, status_code=status.HTTP_200_OK
+            )
     return {"stauts": "Not found"}
