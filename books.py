@@ -136,3 +136,14 @@ async def update_book(book: BookRequest, book_id: int = Path(gt=0)):
                 content={"status": "success"}, status_code=status.HTTP_200_OK
             )
     return {"stauts": "Not found"}
+
+
+@app.delete("/books/{book_id}")
+async def delete_book(book_id: int = Path(gt=0)):
+    for i, book in enumerate(BOOKS):
+        if BOOKS[i].book_id == book_id:
+            BOOKS.pop(i)
+            return JSONResponse(
+                content={"status": "success"}, status_code=status.HTTP_200_OK
+            )
+    return HTTPException(status_code=404, detail="Not Found")
